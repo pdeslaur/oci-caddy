@@ -1,0 +1,59 @@
+package:
+    name: caddy
+    version: "2.11.4"
+    epoch: 0
+    description: Caddy web server with ACME proxy DNS provider
+    copyright:
+        - license: Apache-2.0
+    dependencies:
+        runtime:
+            - ca-certificates-bundle
+
+environment:
+    contents:
+        repositories:
+            - https://packages.wolfi.dev/os
+        keyring:
+            - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+        packages:
+            - busybox
+            - ca-certificates-bundle
+            - go-1.26
+    environment:
+        CGO_ENABLED: "0"
+
+pipeline:
+    - uses: git-checkout
+      with:
+          repository: https://github.com/caddyserver/caddy
+          tag: v${{package.version}}
+          expected-commit: e2eee6a7fce366321294c9c2a79f3146891dcbdf
+
+    - name: Add ACME proxy DNS provider
+      runs: |
+          {
+            echo 'package main'
+            echo ''
+            echo 'import ('
+            echo '	_ "time/tzdata"'
+            echo ''
+            echo '	caddycmd "github.com/caddyserver/caddy/v2/cmd"'
+            echo '	_ "github.com/caddyserver/caddy/v2/modules/standard"'
+            echo '	_ "github.com/caddy-dns/acmeproxy"'
+            echo ')'
+            echo ''
+            echo 'func main() { caddycmd.Main() }'
+          } > cmd/caddy/main.go
+          go get github.com/caddy-dns/acmeproxy@v1.1.1
+          go mod tidy
+
+    - uses: go/build
+      with:
+          packages: ./cmd/caddy
+          output: caddy
+          go-package: go-1.26
+          tags: nobadger,nomysql,nopgx
+
+test:
+    pipeline:
+        - runs: /usr/bin/caddy version
