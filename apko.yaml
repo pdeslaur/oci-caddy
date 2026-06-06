@@ -9,7 +9,7 @@ contents:
         - caddy
 
 entrypoint:
-    command: /usr/bin/caddy
+    command: /usr/bin/caddy run
 
 archs:
     - x86_64
