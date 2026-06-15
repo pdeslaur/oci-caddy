@@ -46,7 +46,7 @@ pipeline:
             echo 'func main() { caddycmd.Main() }'
           } > cmd/caddy/main.go
           go get github.com/caddy-dns/acmeproxy@v1.1.1
-          go get github.com/pdeslaur/caddy-pocketid@v0.1.0
+          go get github.com/pdeslaur/caddy-pocketid@v0.1.1
           go mod tidy
 
     - uses: go/build
