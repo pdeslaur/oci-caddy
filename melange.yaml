@@ -1,6 +1,6 @@
 package:
     name: caddy
-    version: "2.11.8"
+    version: "2.11.9"
     epoch: 0
     description: Caddy web server with ACME proxy DNS provider
     copyright:
@@ -27,7 +27,7 @@ pipeline:
       with:
           repository: https://github.com/caddyserver/caddy
           tag: v${{package.version}}
-          expected-commit: 55996dfe05c10bb616ccdcc9bf5b8407a5be75b7
+          expected-commit: 0d98caea58f794f88e709b1bef2880996a471bca
 
     - name: Add ACME proxy DNS provider and pocketid auth plugin
       runs: |
